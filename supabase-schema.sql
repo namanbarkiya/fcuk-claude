@@ -7,8 +7,8 @@
 
 CREATE TABLE IF NOT EXISTS users (
     id         UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
-    username   TEXT        NOT NULL UNIQUE,
-    email      TEXT        NOT NULL,
+    username   TEXT        NOT NULL UNIQUE CHECK (char_length(username) BETWEEN 1 AND 30),
+    email      TEXT        NOT NULL CHECK (char_length(email) <= 255),
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
@@ -16,9 +16,9 @@ CREATE TABLE IF NOT EXISTS posts (
     id         UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id    UUID        NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     username   TEXT        NOT NULL,
-    content    TEXT        NOT NULL CHECK (char_length(content) <= 500),
-    emoji      TEXT        NOT NULL DEFAULT '🤬',
-    image_url  TEXT,
+    content    TEXT        NOT NULL DEFAULT '' CHECK (char_length(content) <= 500),
+    emoji      TEXT        NOT NULL DEFAULT '🤬' CHECK (char_length(emoji) <= 10),
+    image_url  TEXT        CHECK (image_url IS NULL OR char_length(image_url) <= 2048),
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS reactions (
     id         UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
     post_id    UUID        NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
     user_id    UUID        NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    emoji      TEXT        NOT NULL DEFAULT '👍',
+    emoji      TEXT        NOT NULL DEFAULT '👍' CHECK (char_length(emoji) <= 10),
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     UNIQUE(post_id, user_id, emoji)
 );

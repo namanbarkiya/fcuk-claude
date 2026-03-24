@@ -31,7 +31,6 @@ function getRelativeTime(dateString: string): string {
 interface PostCardProps {
   post: Post;
   userId: string | null;
-  variant?: "wide" | "tall" | "normal";
   reactions: ReactionCount[];
   onReactionsChange: (postId: string, reactions: ReactionCount[]) => void;
 }
@@ -57,8 +56,13 @@ export default function PostCard({
     return () => document.removeEventListener("mousedown", handleClick);
   }, [showPicker]);
 
+  function promptLogin() {
+    window.dispatchEvent(new Event("prompt-login"));
+  }
+
   async function handleReaction(emoji: string) {
-    if (!userId || isPending) return;
+    if (!userId) { promptLogin(); return; }
+    if (isPending) return;
     setShowPicker(false);
     setIsPending(emoji);
 
@@ -98,7 +102,7 @@ export default function PostCard({
   }
 
   return (
-    <article className="bg-surface border border-border-subtle rounded-2xl p-4 hover:border-border transition-colors group h-full flex flex-col overflow-hidden">
+    <article className="bg-surface border border-border-subtle rounded-2xl p-4 hover:border-border transition-colors group h-full flex flex-col">
       {/* Header */}
       <div className="flex items-center gap-1.5 mb-2 flex-shrink-0">
         <span className="text-lg select-none leading-none">{post.emoji}</span>
@@ -124,15 +128,12 @@ export default function PostCard({
           <button
             key={r.emoji}
             type="button"
-            disabled={!userId}
             onClick={() => handleReaction(r.emoji)}
-            title={userId ? undefined : "Log in to react"}
             className={[
-              "inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-xs transition-all",
+              "inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-xs transition-all cursor-pointer",
               r.reacted
                 ? "bg-accent/15 text-accent ring-1 ring-accent/30"
                 : "bg-bg-hover text-text-primary hover:bg-bg-elevated",
-              !userId ? "cursor-default" : "cursor-pointer",
             ].join(" ")}
           >
             <span className="text-[11px]">{r.emoji}</span>
@@ -146,16 +147,15 @@ export default function PostCard({
           </button>
         ))}
 
-        {userId && (
-          <div className="relative" ref={pickerRef}>
+        <div className="relative" ref={pickerRef}>
             <button
               type="button"
-              onClick={() => setShowPicker((v) => !v)}
+              onClick={() => { if (!userId) { promptLogin(); return; } setShowPicker((v) => !v); }}
               className={[
                 "inline-flex items-center justify-center w-5 h-5 rounded-full text-[10px] font-bold transition-colors",
                 showPicker
                   ? "bg-accent/15 text-accent"
-                  : "bg-bg-hover text-text-muted hover:text-text-primary hover:bg-bg-elevated opacity-0 group-hover:opacity-100",
+                  : "bg-bg-hover text-text-muted hover:text-text-primary hover:bg-bg-elevated",
               ].join(" ")}
               aria-label="Add reaction"
             >
@@ -184,7 +184,6 @@ export default function PostCard({
               </div>
             )}
           </div>
-        )}
       </div>
     </article>
   );

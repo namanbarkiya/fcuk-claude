@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import type { User } from "@/types";
 
 interface HeaderProps {
@@ -100,10 +101,17 @@ export default function Header({ user, onLogout }: HeaderProps) {
                     </svg>
                     source code
                   </a>
-                  <div className="border-t border-border-subtle pt-2">
+                  <div className="border-t border-border-subtle pt-2 flex flex-col gap-2">
                     <p className="text-[10px] text-text-muted/60 leading-relaxed">
-                      not affiliated with, endorsed by, or associated with Anthropic or Claude AI. parody/satire for entertainment only.
+                      This is a community-driven, satirical project built entirely for fun.
+                      Not affiliated with, endorsed by, or sponsored by Anthropic, PBC.
+                      All user-generated content is the sole responsibility of its authors.
+                      If Anthropic or any rights holder wants this site modified or removed, we will happily comply.
                     </p>
+                    <div className="flex items-center gap-3">
+                      <Link href="/terms" className="text-[10px] text-text-muted hover:text-accent transition-colors">Terms</Link>
+                      <Link href="/privacy" className="text-[10px] text-text-muted hover:text-accent transition-colors">Privacy</Link>
+                    </div>
                   </div>
                 </div>
               </div>

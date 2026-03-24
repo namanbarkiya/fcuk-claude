@@ -115,11 +115,23 @@ export async function POST(request: Request) {
   const body = await request.json();
   const { user_id, username, content, emoji, image_url } = body;
 
-  if (!user_id || !username || !content) {
+  if (!user_id || !username || (!content && !image_url)) {
     return NextResponse.json(
-      { error: 'user_id, username, and content are required' },
+      { error: 'user_id, username, and content or image are required' },
       { status: 400 }
     );
+  }
+
+  if (content && content.length > 500) {
+    return NextResponse.json({ error: 'Content must be 500 characters or less' }, { status: 400 });
+  }
+
+  if (image_url && image_url.length > 2048) {
+    return NextResponse.json({ error: 'Image URL must be 2048 characters or less' }, { status: 400 });
+  }
+
+  if (username.length > 30) {
+    return NextResponse.json({ error: 'Username must be 30 characters or less' }, { status: 400 });
   }
 
   const { data: newPost, error } = await getSupabaseAdmin()
@@ -127,7 +139,7 @@ export async function POST(request: Request) {
     .insert({
       user_id,
       username,
-      content,
+      content: content ?? '',
       emoji: emoji ?? '🤬',
       image_url: image_url ?? null,
     })

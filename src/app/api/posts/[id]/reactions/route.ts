@@ -48,9 +48,18 @@ export async function POST(
   const body = await request.json();
   const { user_id, emoji } = body as { user_id?: string; emoji?: string };
 
+  const ALLOWED_EMOJIS = ['👍', '🔥', '😂', '💀', '❤️'];
+
   if (!user_id || !emoji) {
     return NextResponse.json(
       { error: 'user_id and emoji are required' },
+      { status: 400 }
+    );
+  }
+
+  if (!ALLOWED_EMOJIS.includes(emoji)) {
+    return NextResponse.json(
+      { error: 'Invalid reaction emoji' },
       { status: 400 }
     );
   }

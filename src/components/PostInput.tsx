@@ -33,7 +33,7 @@ export default function PostInput({ user, onPostCreated }: PostInputProps) {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (isEmpty || isOverLimit || isSubmitting) return;
+    if ((isEmpty && !hasImage) || isOverLimit || isSubmitting) return;
     setError("");
     setIsSubmitting(true);
     try {
@@ -94,7 +94,7 @@ export default function PostInput({ user, onPostCreated }: PostInputProps) {
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          placeholder="claude just mass-deleted my production db and said 'i noticed some improvements'..."
+          placeholder="claude just shipped the feature i spent 3 months building... in a single update"
           rows={4}
           className={`w-full rounded-xl border px-4 py-3 text-sm text-text-primary placeholder:text-text-muted bg-bg resize-none outline-none transition-colors ${
             isOverLimit
@@ -168,7 +168,7 @@ export default function PostInput({ user, onPostCreated }: PostInputProps) {
 
           <button
             type="submit"
-            disabled={isEmpty || isOverLimit || isSubmitting}
+            disabled={(isEmpty && !hasImage) || isOverLimit || isSubmitting}
             className="flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span className="text-base leading-none">{selectedEmoji}</span>

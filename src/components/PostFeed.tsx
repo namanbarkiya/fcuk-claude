@@ -6,14 +6,6 @@ import PostCard from "./PostCard";
 
 const PAGE_LIMIT = 20;
 
-const BENTO_PATTERN: Array<"wide" | "tall" | "normal"> = [
-  "wide", "normal", "tall", "normal", "normal", "normal",
-  "wide", "tall", "normal", "normal", "normal", "wide",
-];
-
-function getBentoSize(index: number) {
-  return BENTO_PATTERN[index % BENTO_PATTERN.length];
-}
 
 export type SortMode = "latest" | "popular" | "longest";
 
@@ -104,24 +96,25 @@ export default function PostFeed({ userId, sort = "latest" }: PostFeedProps) {
   }, []);
 
   if (isLoading) {
-    const skeletonSizes: Array<"wide" | "tall" | "normal"> = ["wide", "normal", "tall", "normal", "normal", "normal", "wide", "normal"];
     return (
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 auto-rows-auto">
-        {skeletonSizes.map((size, i) => (
-          <div
-            key={i}
-            className={`bg-surface border border-border-subtle rounded-2xl p-4 animate-pulse ${
-              size === "wide" ? "col-span-2" : ""
-            } ${size === "tall" ? "row-span-2" : ""}`}
-          >
-            <div className="flex items-center gap-2 mb-3">
-              <div className="h-3 w-16 rounded bg-bg-hover" />
-              <div className="h-3 w-10 rounded bg-bg-hover" />
-            </div>
-            <div className="flex flex-col gap-2">
-              <div className="h-3 w-full rounded bg-bg-hover" />
-              <div className="h-3 w-3/4 rounded bg-bg-hover" />
-            </div>
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 items-start">
+        {Array.from({ length: 3 }).map((_, colIndex) => (
+          <div key={colIndex} className="flex flex-col gap-3">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div
+                key={i}
+                className="bg-surface border border-border-subtle rounded-2xl p-4 animate-pulse"
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="h-3 w-16 rounded bg-bg-hover" />
+                  <div className="h-3 w-10 rounded bg-bg-hover" />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <div className="h-3 w-full rounded bg-bg-hover" />
+                  <div className="h-3 w-3/4 rounded bg-bg-hover" />
+                </div>
+              </div>
+            ))}
           </div>
         ))}
       </div>
@@ -154,28 +147,29 @@ export default function PostFeed({ userId, sort = "latest" }: PostFeedProps) {
     );
   }
 
+  // Distribute posts into columns in row-order (left-to-right, then down)
+  const colCount = 3;
+  const columns: Post[][] = Array.from({ length: colCount }, () => []);
+  posts.forEach((post, i) => {
+    columns[i % colCount].push(post);
+  });
+
   return (
     <>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 auto-rows-auto">
-        {posts.map((post, i) => {
-          const size = getBentoSize(i);
-          return (
-            <div
-              key={post.id}
-              className={`min-w-0 ${
-                size === "wide" ? "col-span-2" : ""
-              } ${size === "tall" ? "row-span-2" : ""}`}
-            >
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 items-start">
+        {columns.map((col, colIndex) => (
+          <div key={colIndex} className="flex flex-col gap-3">
+            {col.map((post) => (
               <PostCard
+                key={post.id}
                 post={post}
                 userId={userId}
-                variant={size}
                 reactions={reactions[post.id] ?? []}
                 onReactionsChange={updateReactions}
               />
-            </div>
-          );
-        })}
+            ))}
+          </div>
+        ))}
       </div>
 
       <div ref={sentinelRef} className="h-1" />

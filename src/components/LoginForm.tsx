@@ -5,9 +5,10 @@ import type { User } from "@/types";
 
 interface LoginFormProps {
   onLogin: (user: User) => void;
+  onClose: () => void;
 }
 
-export default function LoginForm({ onLogin }: LoginFormProps) {
+export default function LoginForm({ onLogin, onClose }: LoginFormProps) {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
@@ -22,6 +23,10 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
 
     if (!trimmedUsername) {
       setError("Username is required.");
+      return;
+    }
+    if (trimmedUsername.length > 30) {
+      setError("Username must be 30 characters or less.");
       return;
     }
     if (!trimmedEmail) {
@@ -63,8 +68,20 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
-      <div className="w-full max-w-md bg-bg-elevated rounded-2xl border border-border p-8">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+    >
+      <div className="w-full max-w-md bg-bg-elevated rounded-2xl border border-border p-8 relative">
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute top-4 right-4 text-text-muted hover:text-text-primary transition-colors text-lg leading-none"
+          aria-label="Close"
+        >
+          &times;
+        </button>
+
         <div className="mb-6">
           <div className="text-2xl mb-3">💀</div>
           <h2
@@ -89,7 +106,7 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="angryuser42"
-              maxLength={32}
+              maxLength={30}
               autoComplete="off"
               autoFocus
               className="w-full rounded-lg border border-border bg-bg px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-colors"
@@ -110,7 +127,7 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
               className="w-full rounded-lg border border-border bg-bg px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-colors"
             />
             <p className="text-xs text-text-muted">
-              we won't spam you. unlike claude, we respect boundaries.
+              no verification, no spam. just a fun site. we respect your inbox more than claude respects your code.
             </p>
           </div>
 

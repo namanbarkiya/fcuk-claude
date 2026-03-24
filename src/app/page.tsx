@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import type { User } from "@/types";
 import Header from "@/components/Header";
 import LoginForm from "@/components/LoginForm";
@@ -12,6 +13,7 @@ export default function Home() {
   const [feedKey, setFeedKey] = useState(0);
   const [sort, setSort] = useState<SortMode>("latest");
   const [hydrated, setHydrated] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem("fcuk-claude-user");
@@ -25,8 +27,16 @@ export default function Home() {
     setHydrated(true);
   }, []);
 
+  // Listen for login prompts from child components
+  useEffect(() => {
+    const handler = () => setShowLogin(true);
+    window.addEventListener("prompt-login", handler);
+    return () => window.removeEventListener("prompt-login", handler);
+  }, []);
+
   function handleLogin(loggedInUser: User) {
     setUser(loggedInUser);
+    setShowLogin(false);
   }
 
   function handleLogout() {
@@ -45,17 +55,17 @@ export default function Home() {
       <main className="pt-16">
         {/* Hero */}
         <section className="py-10 sm:py-14 text-center px-4">
-          <p className="text-sm text-text-muted mb-3">claude fumbled again. shocking.</p>
+          <p className="text-sm text-text-muted mb-3">claude shipped another feature. your roadmap just died.</p>
           <h1
             className="text-3xl sm:text-5xl font-bold tracking-tight text-text-primary leading-[1.15]"
             style={{ fontFamily: "var(--font-serif)" }}
           >
-            the <span className="text-accent">wall</span> anthropic<br className="hidden sm:block" />{" "}
-            doesn't want you to see
+            claude's <span className="text-accent">changelog</span><br className="hidden sm:block" />{" "}
+            is your obituary
           </h1>
           <p className="mt-4 text-sm sm:text-base text-text-secondary max-w-md mx-auto">
-            rate limited. code deleted. $20/mo for vibes.
-            this is where we post about it.
+            claude ships faster than your entire team.
+            this is where we cope about it.
           </p>
           <div className="mt-5 flex flex-wrap justify-center gap-2">
             <div className="inline-flex items-center gap-2 bg-surface border border-border-subtle rounded-full px-4 py-1.5 text-xs text-text-muted">
@@ -70,15 +80,27 @@ export default function Home() {
         </section>
 
         <div className="mx-auto max-w-5xl px-4 sm:px-6 pb-20">
-          {/* Post input */}
-          {hydrated && user && (
+          {/* Post input or login prompt */}
+          {hydrated && (
             <section className="mb-8">
-              <PostInput user={user} onPostCreated={handlePostCreated} />
+              {user ? (
+                <PostInput user={user} onPostCreated={handlePostCreated} />
+              ) : (
+                <button
+                  onClick={() => setShowLogin(true)}
+                  className="w-full bg-surface border border-border-subtle rounded-2xl p-5 text-center hover:border-accent transition-colors group cursor-pointer"
+                >
+                  <p className="text-sm text-text-secondary group-hover:text-text-primary transition-colors">
+                    got something to say? <span className="text-accent font-medium">log in to post</span>
+                  </p>
+                  <p className="mt-1 text-xs text-text-muted">no email verification. just pick a name and start ranting.</p>
+                </button>
+              )}
             </section>
           )}
 
           {/* Sort tabs */}
-          <div className={`flex items-center gap-2 mb-6 ${!hydrated || !user ? "mt-0" : ""}`}>
+          <div className="flex items-center gap-2 mb-6">
             <div className="flex-1 h-px bg-border-subtle" />
             {(
               [
@@ -110,7 +132,27 @@ export default function Home() {
         </div>
       </main>
 
-      {hydrated && !user && <LoginForm onLogin={handleLogin} />}
+      {/* Footer */}
+      <footer className="border-t border-border-subtle bg-surface mt-auto">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 py-6">
+          <p className="text-xs text-text-muted text-center leading-relaxed">
+            This site is a community-driven, satirical project built entirely for fun and entertainment.
+            It is <strong className="text-text-secondary">not affiliated with, endorsed by, or sponsored by Anthropic, PBC.</strong>{" "}
+            &ldquo;Claude&rdquo; and &ldquo;Anthropic&rdquo; are trademarks of Anthropic, PBC.
+            All user-generated content is the sole responsibility of its authors.
+            If Anthropic or any rights holder wants this site modified or removed, we will happily comply — just reach out.
+          </p>
+          <div className="mt-3 flex items-center justify-center gap-4">
+            <Link href="/terms" className="text-xs text-text-muted hover:text-accent transition-colors">Terms</Link>
+            <span className="text-border-subtle">·</span>
+            <Link href="/privacy" className="text-xs text-text-muted hover:text-accent transition-colors">Privacy</Link>
+          </div>
+        </div>
+      </footer>
+
+      {showLogin && (
+        <LoginForm onLogin={handleLogin} onClose={() => setShowLogin(false)} />
+      )}
     </div>
   );
 }
