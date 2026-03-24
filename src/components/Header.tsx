@@ -17,12 +17,11 @@ export default function Header({ user, onLogout }: HeaderProps) {
                     className="flex items-center gap-2 text-text-primary hover:text-accent transition-colors"
                 >
                     <Image
-                        src="https://raw.githubusercontent.com/lobehub/lobe-icons/refs/heads/master/packages/static-png/dark/claude-color.png"
-                        alt="Logo"
+                        src="/logo.svg"
+                        alt="fcuk claude"
                         width={24}
                         height={24}
                         className="w-6 h-6"
-                        unoptimized
                     />
                     <span
                         className="text-lg font-bold tracking-tight"

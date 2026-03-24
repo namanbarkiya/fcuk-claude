@@ -20,6 +20,10 @@ const libreBaskerville = Libre_Baskerville({
 });
 
 export const metadata: Metadata = {
+    icons: {
+        icon: "/logo.svg",
+        apple: "/logo.svg",
+    },
     title: "fcuk claude - where devs go to scream",
     description:
         "Rate limited again? Code deleted? Production down? Join thousands of devs rage-posting about Claude AI. The wall of shame Anthropic doesn't want you to see.",
