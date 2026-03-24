@@ -163,7 +163,7 @@ export default function PostCard({
             </button>
 
             {showPicker && (
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 flex items-center gap-0.5 bg-bg-elevated border border-border rounded-xl px-1.5 py-1 shadow-lg z-10">
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 flex items-center gap-0.5 bg-bg-elevated border border-border rounded-xl px-1.5 py-1 shadow-lg z-50">
                 {REACTION_EMOJIS.map((emoji) => {
                   const existing = reactions.find((r) => r.emoji === emoji);
                   const alreadyReacted = existing?.reacted ?? false;

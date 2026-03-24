@@ -110,23 +110,6 @@ export default function Home() {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="py-8 text-center text-xs text-text-muted border-t border-border-subtle space-y-2">
-        <p>
-          built by{" "}
-          <a href="https://x.com/namanbarkiya" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">
-            @namanbarkiya
-          </a>
-          {" "}&middot;{" "}
-          <a href="https://github.com/namanbarkiya/fcuk-claude" target="_blank" rel="noopener noreferrer" className="text-text-secondary hover:text-text-primary transition-colors">
-            github
-          </a>
-        </p>
-        <p className="text-text-muted/60">
-          not affiliated with, endorsed by, or associated with Anthropic or Claude AI. this is a parody/satire project for entertainment purposes only.
-        </p>
-      </footer>
-
       {hydrated && !user && <LoginForm onLogin={handleLogin} />}
     </div>
   );
