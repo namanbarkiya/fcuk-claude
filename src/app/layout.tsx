@@ -39,12 +39,14 @@ export const metadata: Metadata = {
       "The unofficial wall where devs tell Claude exactly what they think. Rate limits, hallucinations, deleted code. All the rage, none of the apologies.",
     type: "website",
     siteName: "fcuk claude",
+    images: [{ url: "https://res.cloudinary.com/dvt5vkfwz/image/upload/v1774350760/fcuk_claude_og_tpgkxf.jpg", width: 1200, height: 630, alt: "fcuk claude" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "fcuk claude - where devs go to scream",
     description:
       "Rate limited again? Code deleted? Join the rage. The wall of shame Anthropic doesn't want you to see.",
+    images: ["https://res.cloudinary.com/dvt5vkfwz/image/upload/v1774350760/fcuk_claude_og_tpgkxf.jpg"],
   },
 };
 

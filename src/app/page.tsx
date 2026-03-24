@@ -110,6 +110,20 @@ export default function Home() {
         </div>
       </main>
 
+      {/* Footer */}
+      <footer className="py-8 text-center text-xs text-text-muted border-t border-border-subtle">
+        <p>
+          built by{" "}
+          <a href="https://x.com/namanbarkiya" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">
+            @namanbarkiya
+          </a>
+          {" "}&middot;{" "}
+          <a href="https://github.com/namanbarkiya/fcuk-claude" target="_blank" rel="noopener noreferrer" className="text-text-secondary hover:text-text-primary transition-colors">
+            github
+          </a>
+        </p>
+      </footer>
+
       {hydrated && !user && <LoginForm onLogin={handleLogin} />}
     </div>
   );
